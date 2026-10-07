@@ -1,0 +1,126 @@
+---
+source: tests/queries.rs
+expression: "render(&matches(\"brackets\", &read(FIXTURE)))"
+---
+  @open 6:11 (
+  @close 6:12 )
+
+(rainbow.exclude )
+  @open 7:19 "
+  @close 7:25 "
+
+  @open 6:14 {
+  @close 8:1 }
+
+  @open 10:6 (
+  @close 10:7 )
+
+(rainbow.exclude )
+  @open 11:11 "
+  @close 11:37 "
+
+  @open 10:9 {
+  @close 12:1 }
+
+  @open 14:7 (
+  @close 14:8 )
+
+(rainbow.exclude )
+  @open 15:8 "
+  @close 15:22 "
+
+  @open 14:10 {
+  @close 16:1 }
+
+(rainbow.exclude )
+  @open 18:7 "
+  @close 18:22 "
+
+(rainbow.exclude )
+  @open 20:5 "
+  @close 20:13 "
+
+  @open 20:3 [
+  @close 20:21 ]
+
+(rainbow.exclude )
+  @open 21:5 "
+  @close 21:13 "
+
+(rainbow.exclude )
+  @open 21:17 "
+  @close 21:30 "
+
+  @open 21:3 [
+  @close 21:32 ]
+
+  @open 18:24 {
+  @close 22:1 }
+
+(rainbow.exclude )
+  @open 26:6 "
+  @close 26:10 "
+
+  @open 26:3 [[
+  @close 26:18 ]]
+
+  @open 25:56 {
+  @close 27:1 }
+
+  @open 29:32 {
+  @close 34:1 }
+
+(rainbow.exclude )
+  @open 36:7 "
+  @close 36:14 "
+
+  @open 37:6 $(
+  @close 37:18 )
+
+(rainbow.exclude )
+  @open 37:5 "
+  @close 37:19 "
+
+(rainbow.exclude )
+  @open 37:23 "
+  @close 37:34 "
+
+  @open 37:3 [
+  @close 37:36 ]
+
+  @open 36:16 {
+  @close 38:1 }
+
+(rainbow.exclude )
+  @open 40:7 "
+  @close 40:31 "
+
+  @open 40:33 {
+  @close 42:1 }
+
+(rainbow.exclude )
+  @open 44:7 "
+  @close 44:16 "
+
+  @open 44:18 {
+  @close 44:26 }
+
+(rainbow.exclude )
+  @open 46:7 "
+  @close 46:13 "
+
+  @open 46:15 {
+  @close 46:17 }
+
+  @open 48:28 {
+  @close 54:1 }
+
+  @open 56:9 (
+  @close 56:10 )
+
+(rainbow.exclude )
+  @open 57:10 "
+  @close 57:36 "
+
+  @open 56:12 {
+  @close 58:1 }

@@ -1,0 +1,68 @@
+mod support;
+
+use std::fs;
+
+use support::{FIXTURE, matches, query, read, render, root};
+
+#[test]
+fn every_query_compiles_against_the_grammar() {
+    let queries: Vec<_> = fs::read_dir(root().join("languages/bats"))
+        .unwrap()
+        .map(|entry| entry.unwrap().path())
+        .filter(|path| path.extension().is_some_and(|extension| extension == "scm"))
+        .collect();
+
+    assert!(queries.len() >= 9, "{queries:?}");
+    for path in queries {
+        query(path.file_stem().unwrap().to_str().unwrap());
+    }
+}
+
+#[test]
+fn highlights_are_the_grammars_own() {
+    assert!(
+        read("languages/bats/highlights.scm") == tree_sitter_bats::HIGHLIGHTS_QUERY,
+        "languages/bats/highlights.scm differs from queries/highlights.scm at the pinned tree-sitter-bats rev; copy it over"
+    );
+}
+
+#[test]
+fn the_fixture_parses_cleanly() {
+    let tree = support::parse(&read(FIXTURE));
+    assert!(
+        !tree.root_node().has_error(),
+        "{}",
+        tree.root_node().to_sexp()
+    );
+}
+
+#[test]
+fn runnables() {
+    insta::assert_snapshot!(render(&matches("runnables", &read(FIXTURE))));
+}
+
+#[test]
+fn outline() {
+    insta::assert_snapshot!(render(&matches("outline", &read(FIXTURE))));
+}
+
+#[test]
+fn textobjects() {
+    insta::assert_snapshot!(render(&matches("textobjects", &read(FIXTURE))));
+}
+
+#[test]
+fn brackets() {
+    insta::assert_snapshot!(render(&matches("brackets", &read(FIXTURE))));
+}
+
+#[test]
+fn indents() {
+    insta::assert_snapshot!(render(&matches("indents", &read(FIXTURE))));
+}
+
+/// Catches upstream highlight changes when the grammar is re-pinned.
+#[test]
+fn highlights() {
+    insta::assert_snapshot!(render(&matches("highlights", &read(FIXTURE))));
+}

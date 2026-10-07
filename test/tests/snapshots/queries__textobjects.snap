@@ -1,0 +1,48 @@
+---
+source: tests/queries.rs
+expression: "render(&matches(\"textobjects\", &read(FIXTURE)))"
+---
+  @comment.around 1:1 #!/usr/bin/env bats
+  @comment.around 3:1 # bats file_tags=fixture
+
+  @function.around 6:1 setup_file() { …
+  @function.inside 7:3 export GREETING="hello"
+
+  @function.around 10:1 setup() { …
+  @function.inside 11:3 SCRATCH="$BATS_TEST_TMPDIR/scratch"
+
+  @function.around 14:1 helper() { …
+  @function.inside 15:3 echo "$GREETING, $1"
+
+  @function.around 18:1 @test "greets by name" { …
+  @function.inside 19:3 run helper world
+  @function.inside 20:3 [ "$status" -eq 0 ]
+  @function.inside 21:3 [ "$output" = "hello, world" ]
+
+  @comment.around 24:1 # bats test_tags=regex
+
+  @function.around 25:1 @test 'matches a.b* (literally) [x] {y} ^$ | +? \ too' { …
+  @function.inside 26:3 [[ "abc" =~ ^a ]]
+
+  @function.around 29:1 @test unquoted name with words { …
+  @function.inside 30:3 case start in …
+
+  @function.around 36:1 @test "greets" { …
+  @function.inside 37:3 [ "$(helper you)" = "hello, you" ]
+
+  @function.around 40:1 @test "matches $HOME literally" { …
+  @function.inside 41:3 true
+
+  @function.around 44:1 @test "one line" { true; }
+  @function.inside 44:20 true
+
+  @function.around 46:1 @test "empty" { }
+
+  @comment.around 48:30 # @test
+
+  @function.around 48:1 function marked_by_comment { # @test …
+  @function.inside 48:30 # @test
+  @function.inside 49:3 if true; then …
+
+  @function.around 56:1 teardown() { …
+  @function.inside 57:3 rm -rf "$BATS_TEST_TMPDIR/scratch"

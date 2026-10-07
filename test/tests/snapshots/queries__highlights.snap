@@ -1,0 +1,273 @@
+---
+source: tests/queries.rs
+expression: "render(&matches(\"highlights\", &read(FIXTURE)))"
+---
+  @keyword.directive 1:1 #!/usr/bin/env bats
+
+  @comment 3:1 # bats file_tags=fixture
+
+  @function.builtin 4:1 bats_require_minimum_version
+
+  @function.builtin 6:1 setup_file
+
+  @punctuation.bracket 6:11 (
+
+  @punctuation.bracket 6:12 )
+
+  @punctuation.bracket 6:14 {
+
+  @keyword 7:3 export
+
+  @variable 7:10 GREETING
+
+  @operator 7:18 =
+
+  @string 7:19 "hello"
+
+  @punctuation.bracket 8:1 }
+
+  @function.builtin 10:1 setup
+
+  @punctuation.bracket 10:6 (
+
+  @punctuation.bracket 10:7 )
+
+  @punctuation.bracket 10:9 {
+
+  @variable 11:3 SCRATCH
+
+  @operator 11:10 =
+
+  @string 11:11 "$BATS_TEST_TMPDIR/scratch"
+
+  @punctuation.special 11:12 $
+
+  @variable.special 11:13 BATS_TEST_TMPDIR
+
+  @punctuation.bracket 12:1 }
+
+  @function 14:1 helper
+
+  @punctuation.bracket 14:7 (
+
+  @punctuation.bracket 14:8 )
+
+  @punctuation.bracket 14:10 {
+
+  @function.builtin 15:3 echo
+
+  @string 15:8 "$GREETING, $1"
+
+  @punctuation.special 15:9 $
+
+  @variable 15:10 GREETING
+
+  @punctuation.special 15:20 $
+
+  @variable.special 15:21 1
+
+  @punctuation.bracket 16:1 }
+
+  @keyword 18:1 @test
+
+  @string 18:7 "greets by name"
+
+  @punctuation.bracket 18:24 {
+
+  @function.builtin 19:3 run
+
+  @punctuation.bracket 20:3 [
+
+  @string 20:5 "$status"
+
+  @punctuation.special 20:6 $
+
+  @variable.special 20:7 status
+
+  @operator 20:15 -eq
+
+  @number 20:19 0
+
+  @punctuation.bracket 20:21 ]
+
+  @punctuation.bracket 21:3 [
+
+  @string 21:5 "$output"
+
+  @punctuation.special 21:6 $
+
+  @variable.special 21:7 output
+
+  @operator 21:15 =
+
+  @string 21:17 "hello, world"
+
+  @punctuation.bracket 21:32 ]
+
+  @punctuation.bracket 22:1 }
+
+  @comment 24:1 # bats test_tags=regex
+
+  @keyword 25:1 @test
+
+  @string 25:7 'matches a.b* (literally) [x] {y} ^$ | +? \ too'
+
+  @punctuation.bracket 25:56 {
+
+  @punctuation.bracket 26:3 [[
+
+  @string 26:6 "abc"
+
+  @operator 26:12 =~
+
+  @string.regex 26:15 ^a
+
+  @punctuation.bracket 26:18 ]]
+
+  @punctuation.bracket 27:1 }
+
+  @keyword 29:1 @test
+
+  @string 29:7 unquoted
+
+  @string 29:16 name
+
+  @string 29:21 with
+
+  @string 29:26 words
+
+  @punctuation.bracket 29:32 {
+
+  @keyword 30:3 case
+
+  @keyword 30:14 in
+
+  @string.regex 31:5 start
+
+  @operator 31:10 |
+
+  @string.regex 31:11 stop
+
+  @punctuation.bracket 31:15 )
+
+  @function.builtin 31:17 true
+
+  @punctuation.delimiter 31:22 ;;
+
+  @string.regex 32:5 *
+
+  @punctuation.bracket 32:6 )
+
+  @function.builtin 32:8 false
+
+  @punctuation.delimiter 32:14 ;;
+
+  @keyword 33:3 esac
+
+  @punctuation.bracket 34:1 }
+
+  @keyword 36:1 @test
+
+  @string 36:7 "greets"
+
+  @punctuation.bracket 36:16 {
+
+  @punctuation.bracket 37:3 [
+
+  @string 37:5 "$(helper you)"
+
+  @embedded 37:6 $(helper you)
+
+  @punctuation.special 37:6 $(
+
+  @function 37:8 helper
+
+  @punctuation.bracket 37:18 )
+
+  @operator 37:21 =
+
+  @string 37:23 "hello, you"
+
+  @punctuation.bracket 37:36 ]
+
+  @punctuation.bracket 38:1 }
+
+  @keyword 40:1 @test
+
+  @string 40:7 "matches $HOME literally"
+
+  @punctuation.special 40:16 $
+
+  @variable 40:17 HOME
+
+  @punctuation.bracket 40:33 {
+
+  @function.builtin 41:3 true
+
+  @punctuation.bracket 42:1 }
+
+  @keyword 44:1 @test
+
+  @string 44:7 "one line"
+
+  @punctuation.bracket 44:18 {
+
+  @function.builtin 44:20 true
+
+  @punctuation.delimiter 44:24 ;
+
+  @punctuation.bracket 44:26 }
+
+  @keyword 46:1 @test
+
+  @string 46:7 "empty"
+
+  @punctuation.bracket 46:15 {
+
+  @punctuation.bracket 46:17 }
+
+  @keyword 48:1 function
+
+  @function 48:10 marked_by_comment
+
+  @punctuation.bracket 48:28 {
+
+  @comment 48:30 # @test
+
+  @keyword 49:3 if
+
+  @function.builtin 49:6 true
+
+  @punctuation.delimiter 49:10 ;
+
+  @keyword 49:12 then
+
+  @function.builtin 50:5 echo
+
+  @keyword 51:3 else
+
+  @function.builtin 52:5 echo
+
+  @keyword 53:3 fi
+
+  @punctuation.bracket 54:1 }
+
+  @function.builtin 56:1 teardown
+
+  @punctuation.bracket 56:9 (
+
+  @punctuation.bracket 56:10 )
+
+  @punctuation.bracket 56:12 {
+
+  @function 57:3 rm
+
+  @constant 57:6 -rf
+
+  @string 57:10 "$BATS_TEST_TMPDIR/scratch"
+
+  @punctuation.special 57:11 $
+
+  @variable.special 57:12 BATS_TEST_TMPDIR
+
+  @punctuation.bracket 58:1 }

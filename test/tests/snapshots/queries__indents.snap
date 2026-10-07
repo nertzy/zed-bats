@@ -1,0 +1,52 @@
+---
+source: tests/queries.rs
+expression: "render(&matches(\"indents\", &read(FIXTURE)))"
+---
+  @indent 6:14 { …
+  @end 8:1 }
+
+  @indent 10:9 { …
+  @end 12:1 }
+
+  @indent 14:10 { …
+  @end 16:1 }
+
+  @indent 18:24 { …
+  @end 22:1 }
+
+  @indent 25:56 { …
+  @end 27:1 }
+
+  @indent 31:5 start|stop) true ;;
+
+  @indent 32:5 *) false ;;
+
+  @indent 30:3 case start in …
+  @end 33:3 esac
+
+  @indent 29:32 { …
+  @end 34:1 }
+
+  @indent 37:6 $(helper you)
+  @end 37:18 )
+
+  @indent 36:16 { …
+  @end 38:1 }
+
+  @indent 40:33 { …
+  @end 42:1 }
+
+  @indent 44:18 { true; }
+  @end 44:26 }
+
+  @indent 46:15 { }
+  @end 46:17 }
+
+  @indent 49:3 if true; then …
+  @end 53:3 fi
+
+  @indent 48:28 { # @test …
+  @end 54:1 }
+
+  @indent 56:12 { …
+  @end 58:1 }
