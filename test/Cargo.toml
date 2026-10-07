@@ -1,0 +1,13 @@
+[package]
+name = "zed-bats-tests"
+version = "0.0.0"
+edition = "2024"
+publish = false
+license = "MIT"
+description = "Query and task tests for the Bats Zed extension. Lives outside the extension root so Zed doesn't build it as a Rust extension."
+
+[dev-dependencies]
+toml = "1.1"
+tree-sitter = "0.27"
+# Keep rev in sync with [grammars.bats] in ../extension.toml; tests/manifest.rs checks it.
+tree-sitter-bats = { git = "https://github.com/nertzy/tree-sitter-bats", rev = "a9b86d87bc8617af6181aff5e03483714dab4bc2" }

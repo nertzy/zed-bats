@@ -1,0 +1,11 @@
+id = "bats"
+name = "Bats"
+version = "0.0.1"
+schema_version = 1
+authors = ["Grant Hutchins <zed-plugins@nertzy.com>"]
+description = "Bats (Bash Automated Testing System) support for Zed: run each @test from the gutter, with outline and highlighting, built on tree-sitter-bats."
+repository = "https://github.com/nertzy/zed-bats"
+
+[grammars.bats]
+repository = "https://github.com/nertzy/tree-sitter-bats"
+rev = "a9b86d87bc8617af6181aff5e03483714dab4bc2"

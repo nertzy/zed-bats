@@ -1,0 +1,6 @@
+# Zed's dev-extension build output
+/grammars/
+/extension.wasm
+
+# Query test harness
+/test/target/

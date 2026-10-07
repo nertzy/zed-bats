@@ -1,0 +1,20 @@
+version: 2
+updates:
+  - package-ecosystem: cargo
+    directory: /test
+    schedule:
+      interval: weekly
+    groups:
+      cargo-dependencies:
+        patterns: ["*"]
+    ignore:
+      # The grammar is pinned by commit in extension.toml and test/Cargo.toml; bump both together by hand.
+      - dependency-name: tree-sitter-bats
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns: ["*"]
