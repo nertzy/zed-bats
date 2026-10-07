@@ -160,6 +160,18 @@ fn the_test_task_reports_a_row_above_every_test() {
 }
 
 #[test]
+fn the_test_task_names_a_missing_variable() {
+    let output = run(&task("bats-test"), &HashMap::new());
+
+    assert!(!output.status.success());
+    assert!(
+        String::from_utf8_lossy(&output.stderr).contains("ZED_FILE is not set"),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+}
+
+#[test]
 fn the_file_task_runs_the_whole_file() {
     let file = root().join(FIXTURE).canonicalize().unwrap();
     let variables = HashMap::from([("ZED_FILE", file.display().to_string())]);
