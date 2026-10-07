@@ -38,11 +38,17 @@ expression: "render(&matches(\"textobjects\", &read(FIXTURE)))"
 
   @function.around 46:1 @test "empty" { }
 
-  @comment.around 48:30 # @test
-
   @function.around 48:1 function marked_by_comment { # @test …
   @function.inside 48:30 # @test
   @function.inside 49:3 if true; then …
 
   @function.around 56:1 teardown() { …
   @function.inside 57:3 rm -rf "$BATS_TEST_TMPDIR/scratch"
+
+  @comment.around 60:1 # Bats ignores a `# @test` that isn't on the line opening the function.
+
+  @comment.around 62:3 # @test
+
+  @function.around 61:1 not_a_test() { …
+  @function.inside 62:3 # @test
+  @function.inside 63:3 false

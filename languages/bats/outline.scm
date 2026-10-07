@@ -9,7 +9,11 @@
     (word)
   ]+ @name) @item
 
-; setup() { ... }, function helper { ... }
+; Functions by bare name, as bash-language-server lists them, whether written
+; `name()` or `function name`. A function Bats runs as a test because its
+; opening line ends in `# @test` shows the marker as context: `name # @test`.
 (function_definition
-  "function"? @context
-  name: (word) @name) @item
+  name: (word) @name
+  body: (_
+    .
+    (test_marker_comment)? @context)) @item
