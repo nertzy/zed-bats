@@ -41,6 +41,29 @@ fn runnables() {
     insta::assert_snapshot!(render(&matches("runnables", &read(FIXTURE))));
 }
 
+/// Zed drops a runnable whose @run capture reaches the end of the buffer
+/// (`MultiBufferSnapshot::runnable_ranges` keeps `run_range.end < range.end`),
+/// so its button never appears.
+#[test]
+fn every_run_capture_ends_before_the_end_of_the_file() {
+    let source = read(FIXTURE);
+    for found in matches("runnables", &source) {
+        for capture in found
+            .captures
+            .iter()
+            .filter(|capture| capture.name == "run")
+        {
+            assert!(
+                capture.end < source.len(),
+                "{:?} @run at {}:{} reaches the end of the file",
+                found.properties,
+                capture.row + 1,
+                capture.column + 1
+            );
+        }
+    }
+}
+
 #[test]
 fn outline() {
     insta::assert_snapshot!(render(&matches("outline", &read(FIXTURE))));

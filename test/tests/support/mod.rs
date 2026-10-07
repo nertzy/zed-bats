@@ -41,6 +41,8 @@ pub struct Capture {
     pub name: String,
     pub row: usize,
     pub column: usize,
+    /// Byte offset just past the captured node.
+    pub end: usize,
     pub text: String,
 }
 
@@ -71,6 +73,7 @@ pub fn matches(query_name: &str, source: &str) -> Vec<Match> {
                     name: query.capture_names()[capture.index as usize].to_string(),
                     row: start.row,
                     column: start.column,
+                    end: capture.node.end_byte(),
                     text: capture
                         .node
                         .utf8_text(source.as_bytes())

@@ -17,6 +17,10 @@
   (#match? @_marker "^#[ \t]*@test[ \t]*$")
   (#set! tag bats-test))
 
-; The whole file.
-((program) @run
+; The whole file, from a button on its first line. Zed drops any runnable
+; whose @run reaches the end of the buffer, so capture the first child rather
+; than the program.
+((program
+  .
+  (_) @run) @_bats-file
   (#set! tag bats-file))

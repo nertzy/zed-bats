@@ -3,7 +3,8 @@ source: tests/queries.rs
 expression: "render(&matches(\"runnables\", &read(FIXTURE)))"
 ---
 (tag bats-file)
-  @run 1:1 #!/usr/bin/env bats …
+  @_bats-file 1:1 #!/usr/bin/env bats …
+  @run 1:1 #!/usr/bin/env bats
 
 (tag bats-test)
   @_bats-test 18:1 @test "greets by name" { …
