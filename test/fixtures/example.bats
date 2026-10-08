@@ -56,3 +56,15 @@ function marked_by_comment { # @test
 teardown() {
   rm -rf "$BATS_TEST_TMPDIR/scratch"
 }
+
+# Bats ignores a `# @test` that isn't on the line opening the function.
+not_a_test() {
+  # @test
+  false
+}
+
+print_usage() {
+  cat <<USAGE
+$# arguments, last status $?
+USAGE
+}

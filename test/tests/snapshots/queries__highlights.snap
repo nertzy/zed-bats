@@ -234,6 +234,8 @@ expression: "render(&matches(\"highlights\", &read(FIXTURE)))"
 
   @comment 48:30 # @test
 
+  @keyword 48:32 @test
+
   @keyword 49:3 if
 
   @function.builtin 49:6 true
@@ -271,3 +273,43 @@ expression: "render(&matches(\"highlights\", &read(FIXTURE)))"
   @variable.special 57:12 BATS_TEST_TMPDIR
 
   @punctuation.bracket 58:1 }
+
+  @comment 60:1 # Bats ignores a `# @test` that isn't on the line opening the function.
+
+  @function 61:1 not_a_test
+
+  @punctuation.bracket 61:11 (
+
+  @punctuation.bracket 61:12 )
+
+  @punctuation.bracket 61:14 {
+
+  @comment 62:3 # @test
+
+  @function.builtin 63:3 false
+
+  @punctuation.bracket 64:1 }
+
+  @function 66:1 print_usage
+
+  @punctuation.bracket 66:12 (
+
+  @punctuation.bracket 66:13 )
+
+  @punctuation.bracket 66:15 {
+
+  @function 67:3 cat
+
+  @operator 67:7 <<
+
+  @string.special 67:9 USAGE
+
+  @string 68:1 $# arguments, last status $?
+
+  @punctuation.special 68:1 $
+
+  @variable.special 68:2 #
+
+  @string.special 69:1 USAGE
+
+  @punctuation.bracket 70:1 }

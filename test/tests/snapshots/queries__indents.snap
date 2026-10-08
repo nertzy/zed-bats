@@ -50,3 +50,9 @@ expression: "render(&matches(\"indents\", &read(FIXTURE)))"
 
   @indent 56:12 { …
   @end 58:1 }
+
+  @indent 61:14 { …
+  @end 64:1 }
+
+  @indent 66:15 { …
+  @end 70:1 }

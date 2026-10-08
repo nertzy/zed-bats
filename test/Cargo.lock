@@ -437,7 +437,7 @@ dependencies = [
 [[package]]
 name = "tree-sitter-bats"
 version = "0.1.0"
-source = "git+https://github.com/nertzy/tree-sitter-bats?rev=cd4fb46943d50247cf318a553f8124ab33e07232#cd4fb46943d50247cf318a553f8124ab33e07232"
+source = "git+https://github.com/nertzy/tree-sitter-bats?rev=b0fb1f181073c3ef6a309cfa9c94f7d24600e12f#b0fb1f181073c3ef6a309cfa9c94f7d24600e12f"
 dependencies = [
  "cc",
  "tree-sitter-language",

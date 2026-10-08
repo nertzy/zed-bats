@@ -9,7 +9,7 @@
 - **Run a test from the gutter.** Each `@test`, and each function Bats runs as a test (`name() { # @test`), gets a run button. It runs exactly that test: the task reads the test's line from the saved file, takes the name the way Bats does, and passes it to `bats --filter` as an escaped, anchored regex.
 - **Run the file.** A run button on the first line runs `bats` on the whole file.
 - **Highlighting** from tree-sitter-bats's own `highlights.scm`: Bats keywords, helpers (`run`, `load`, `skip`, …), hooks (`setup`, `teardown`, …), and variables (`$status`, `$output`, `$lines`, `$BATS_*`) on top of Bash.
-- **Outline** of tests, hooks, and functions, for the outline panel and `editor: toggle outline`.
+- **Outline** of tests, hooks, and functions, for the outline panel and `editor: toggle outline`. Functions show by bare name, as bash-language-server lists them; one Bats runs as a test because of a `# @test` comment shows as `name # @test`.
 - **Vim text objects and motions**: tests and functions are functions (`af`, `if`, `]m`), adjacent comments are one comment.
 - **Brackets, indentation, comment toggling, and redaction** of assigned values while screen sharing.
 

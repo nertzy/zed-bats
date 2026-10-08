@@ -33,6 +33,7 @@ pub const FIXTURE: &str = "test/fixtures/example.bats";
 
 /// One query match: the `#set!` properties of its pattern and its captures.
 pub struct Match {
+    pub pattern: usize,
     pub properties: Vec<String>,
     pub captures: Vec<Capture>,
 }
@@ -83,6 +84,7 @@ pub fn matches(query_name: &str, source: &str) -> Vec<Match> {
             })
             .collect();
         found.push(Match {
+            pattern: found_match.pattern_index,
             properties,
             captures,
         });

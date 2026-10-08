@@ -13,8 +13,7 @@
   name: (word) @run
   body: (compound_statement
     .
-    (comment) @_marker)) @_bats-test
-  (#match? @_marker "^#[ \t]*@test[ \t]*$")
+    (test_marker_comment))) @_bats-test
   (#set! tag bats-test))
 
 ; The whole file, from a button on its first line. Zed drops any runnable

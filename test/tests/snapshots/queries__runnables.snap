@@ -37,4 +37,3 @@ expression: "render(&matches(\"runnables\", &read(FIXTURE)))"
 (tag bats-test)
   @_bats-test 48:1 function marked_by_comment { # @test …
   @run 48:10 marked_by_comment
-  @_marker 48:30 # @test

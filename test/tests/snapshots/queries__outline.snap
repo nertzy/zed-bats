@@ -43,8 +43,14 @@ expression: "render(&matches(\"outline\", &read(FIXTURE)))"
   @name 46:7 "empty"
 
   @item 48:1 function marked_by_comment { # @test …
-  @context 48:1 function
   @name 48:10 marked_by_comment
+  @context 48:30 # @test
 
   @item 56:1 teardown() { …
   @name 56:1 teardown
+
+  @item 61:1 not_a_test() { …
+  @name 61:1 not_a_test
+
+  @item 66:1 print_usage() { …
+  @name 66:1 print_usage

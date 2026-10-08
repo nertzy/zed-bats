@@ -84,7 +84,43 @@ fn indents() {
     insta::assert_snapshot!(render(&matches("indents", &read(FIXTURE))));
 }
 
+#[test]
+fn overrides() {
+    insta::assert_snapshot!(render(&matches("overrides", &read(FIXTURE))));
+}
+
+#[test]
+fn injections() {
+    insta::assert_snapshot!(render(&matches("injections", &read(FIXTURE))));
+}
+
 /// Catches upstream highlight changes when the grammar is re-pinned.
+/// The highlights snapshot only guards what the fixture exercises, so it
+/// must exercise every pattern.
+#[test]
+fn the_fixture_exercises_every_highlight_pattern() {
+    let query = query("highlights");
+    let hit: Vec<usize> = matches("highlights", &read(FIXTURE))
+        .iter()
+        .map(|found| found.pattern)
+        .collect();
+    let missed: Vec<String> = (0..query.pattern_count())
+        .filter(|pattern| !hit.contains(pattern))
+        .map(|pattern| {
+            let start = query.start_byte_for_pattern(pattern);
+            let end = query.end_byte_for_pattern(pattern);
+            read("languages/bats/highlights.scm")[start..end]
+                .trim()
+                .to_string()
+        })
+        .collect();
+    assert!(
+        missed.is_empty(),
+        "unmatched highlight patterns:\n{}",
+        missed.join("\n")
+    );
+}
+
 #[test]
 fn highlights() {
     insta::assert_snapshot!(render(&matches("highlights", &read(FIXTURE))));

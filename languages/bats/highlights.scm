@@ -47,6 +47,10 @@
   "while"
 ] @keyword
 
+; `name() { # @test` marks a function Bats runs as a test. Its `@test` is a
+; keyword, from the list above.
+(test_marker_comment) @comment
+
 ; Commands
 
 ((command_name) @function.builtin
