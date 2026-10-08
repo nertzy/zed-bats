@@ -1,6 +1,6 @@
 id = "bats"
 name = "Bats"
-version = "0.0.1"
+version = "0.1.0"
 schema_version = 1
 authors = ["Grant Hutchins <zed-plugins@nertzy.com>"]
 description = "Bats (Bash Automated Testing System) support for Zed: run each @test from the gutter, with outline and highlighting, built on tree-sitter-bats."
