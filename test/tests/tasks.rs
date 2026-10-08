@@ -2,6 +2,7 @@ mod support;
 
 use std::{
     collections::HashMap,
+    os::unix::process::CommandExt,
     process::{Command, Output, Stdio},
 };
 
@@ -52,8 +53,24 @@ fn run(task: &Value, variables: &HashMap<&str, String>) -> Output {
         .map(|arg| arg.as_str().unwrap())
         .collect();
 
-    Command::new(shell["program"].as_str().unwrap())
-        .args(shell_args)
+    let mut bash = Command::new(shell["program"].as_str().unwrap());
+    // Detach from the terminal, or an interactive bash that shares it with
+    // an interactive cargo test can stop itself with SIGTTIN.
+    // SAFETY: setsid is async-signal-safe.
+    unsafe {
+        bash.pre_exec(|| match libc::setsid() {
+            -1 => Err(std::io::Error::last_os_error()),
+            _ => Ok(()),
+        });
+    }
+    // Zed exports its task variables to every task, so a test run from a Zed
+    // terminal inherits them; each case sets only its own.
+    for (name, _) in std::env::vars_os() {
+        if name.to_string_lossy().starts_with("ZED_") {
+            bash.env_remove(name);
+        }
+    }
+    bash.args(shell_args)
         .args(["-i", "-c", &command])
         .envs(variables)
         .env("HOME", "/home/zed-bats")
@@ -160,15 +177,26 @@ fn the_test_task_reports_a_row_above_every_test() {
 }
 
 #[test]
-fn the_test_task_names_a_missing_variable() {
-    let output = run(&task("bats-test"), &HashMap::new());
+fn the_test_task_stops_when_a_variable_is_missing() {
+    let file = root().join(FIXTURE).canonicalize().unwrap();
+    for variables in [
+        HashMap::from([("ZED_FILE", file.display().to_string())]),
+        HashMap::from([("ZED_ROW", "18".to_string())]),
+    ] {
+        let output = run(&task("bats-test"), &variables);
 
-    assert!(!output.status.success());
-    assert!(
-        String::from_utf8_lossy(&output.stderr).contains("ZED_FILE is not set"),
-        "{}",
-        String::from_utf8_lossy(&output.stderr)
-    );
+        assert!(!output.status.success(), "{variables:?}");
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        let messages: Vec<&str> = stderr
+            .lines()
+            .filter(|line| !line.starts_with("bash: ") && *line != "exit")
+            .collect();
+        assert_eq!(
+            messages,
+            ["ZED_FILE and ZED_ROW must be set"],
+            "{variables:?}: {stderr}"
+        );
+    }
 }
 
 #[test]

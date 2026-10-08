@@ -8,6 +8,7 @@ description = "Query and task tests for the Bats Zed extension. Lives outside th
 
 [dev-dependencies]
 insta = "1.49"
+libc = "0.2"
 serde_json = "1.0"
 # Zed substitutes task variables with shellexpand; tests/tasks.rs does the same.
 shellexpand = "3.1"
