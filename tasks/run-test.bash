@@ -1,7 +1,7 @@
 # Zed hands a task's command to the shell as source text, after replacing
 # every ZED_ variable reference in it, so this script reads them with printenv.
 file=$(printenv ZED_FILE) row=$(printenv ZED_ROW)
-: "${file:?ZED_FILE is not set}" "${row:?ZED_ROW is not set}"
+[[ -n $file && -n $row ]] || { printf 'ZED_FILE and ZED_ROW must be set\n' >&2; exit 1; }
 test_pattern='^[[:blank:]]*@test[[:blank:]]+(.*[^[:blank:]])[[:blank:]]+\{(.*)$'
 function_pattern='[[:blank:]]*([^[:blank:]()]+)[[:blank:]]*\(?\)?[[:blank:]]+\{[[:blank:]]+#[[:blank:]]*@test[[:blank:]]*$'
 current=0 name=

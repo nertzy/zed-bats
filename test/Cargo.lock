@@ -481,6 +481,7 @@ name = "zed-bats-tests"
 version = "0.0.0"
 dependencies = [
  "insta",
+ "libc",
  "serde_json",
  "shellexpand",
  "streaming-iterator",
