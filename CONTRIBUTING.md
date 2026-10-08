@@ -26,7 +26,7 @@ The task commands live in `languages/bats/tasks.json`. `test/tasks.bats` runs th
 jq -r '.[0].command' languages/bats/tasks.json | shellcheck --shell=bash -
 ```
 
-The grammar is pinned by commit in two places that must match: `[grammars.bats]` in `extension.toml` and the `tree-sitter-bats` dependency in `test/Cargo.toml`. The tests fail when they differ.
+Zed builds the grammar from the commit `[grammars.bats]` pins in `extension.toml`; the tests use the `tree-sitter-bats` release from crates.io that `test/Cargo.toml` names. Bump both together: the tests fail unless the crate was published from the pinned commit, as its `.cargo_vcs_info.json` records.
 
 To try a change in Zed, run `zed: install dev extension` and choose your checkout. After editing a query, run `zed: rebuild dev extension` or reinstall it.
 

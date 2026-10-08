@@ -1,4 +1,4 @@
-use std::{fs, path::PathBuf};
+use std::{fs, path::PathBuf, process::Command};
 
 fn read_toml(relative: &str) -> toml::Table {
     let path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(relative);
@@ -14,15 +14,52 @@ fn get<'a>(table: &'a toml::Table, path: &[&str]) -> &'a toml::Value {
         .fold(&table[path[0]], |value, key| &value[*key])
 }
 
+/// The directory Cargo unpacked the tree-sitter-bats crate into.
+fn grammar_crate_dir() -> PathBuf {
+    let output = Command::new(env!("CARGO"))
+        .args(["metadata", "--format-version", "1", "--locked"])
+        .current_dir(env!("CARGO_MANIFEST_DIR"))
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let metadata: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    let package = metadata["packages"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|package| package["name"] == "tree-sitter-bats")
+        .unwrap();
+    PathBuf::from(package["manifest_path"].as_str().unwrap())
+        .parent()
+        .unwrap()
+        .to_path_buf()
+}
+
+/// crates.io keeps the commit a crate was published from in
+/// `.cargo_vcs_info.json`, so the harness tests the grammar Zed builds.
 #[test]
 fn harness_tests_the_grammar_revision_the_extension_pins() {
     let extension = read_toml("../extension.toml");
-    let harness = read_toml("Cargo.toml");
     let pinned = get(&extension, &["grammars", "bats"]);
-    let tested = get(&harness, &["dev-dependencies", "tree-sitter-bats"]);
+    let path = grammar_crate_dir().join(".cargo_vcs_info.json");
+    let text =
+        fs::read_to_string(&path).unwrap_or_else(|error| panic!("{}: {error}", path.display()));
+    let vcs_info: serde_json::Value = serde_json::from_str(&text).unwrap();
 
-    assert_eq!(pinned["repository"].as_str(), tested["git"].as_str());
-    assert_eq!(pinned["rev"].as_str(), tested["rev"].as_str());
+    assert_eq!(
+        pinned["repository"].as_str(),
+        Some("https://github.com/nertzy/tree-sitter-bats")
+    );
+    assert_eq!(
+        vcs_info["git"]["dirty"].as_bool(),
+        None,
+        "tree-sitter-bats was published from a dirty checkout"
+    );
+    assert_eq!(pinned["rev"].as_str(), vcs_info["git"]["sha1"].as_str());
 }
 
 #[test]
