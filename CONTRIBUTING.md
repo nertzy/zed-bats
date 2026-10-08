@@ -11,21 +11,19 @@ cd test
 cargo test
 cargo fmt --check
 cargo clippy --all-targets -- -D warnings
-shellcheck --shell=bash ../tasks/run-test.bash
+bats tasks.bats
 ```
 
 `cargo fmt` fixes formatting findings.
 
-The query tests snapshot each Zed query's matches against `test/fixtures/example.bats` with [insta](https://insta.rs). After an intended change, review new snapshots with `cargo insta review`, or accept them with `INSTA_UPDATE=always cargo test`. The task tests run the real `bats` (1.5 or later) on the fixture, so it must be on your `PATH`.
+The query tests snapshot each Zed query's matches against `test/fixtures/example.bats` with [insta](https://insta.rs). After an intended change, review new snapshots with `cargo insta review`, or accept them with `INSTA_UPDATE=always cargo test`. The task tests run the real `bats` (1.5 or later) on the fixture, so it must be on your `PATH`, along with `jq`.
 
 `languages/bats/highlights.scm` is a verbatim copy of `queries/highlights.scm` from the pinned tree-sitter-bats commit; change highlighting there, then re-pin and copy. The tests fail when the copy differs.
 
-The single-test task embeds `tasks/run-test.bash` as its `command` string. Zed replaces `$ZED_` variable references in a command before running it, so the script reads them with `printenv` and must not mention them; the tests fail if substitution would change it. Edit the script, check it with `shellcheck --shell=bash tasks/run-test.bash`, then regenerate the task:
+The task commands live in `languages/bats/tasks.json`. `test/tasks.bats` runs them with the variables Zed exports to a task, and the Rust task tests check how Zed fills those variables in from each run button and spawns the shell. Zed replaces `$ZED_` references in a command before the shell sees it, so the commands read Zed's variables with `printenv`; the tests fail if substitution would change a command. Check an edited command with shellcheck:
 
 ```sh
-jq --rawfile script tasks/run-test.bash \
-  '(.[] | select(.tags == ["bats-test"]) | .command) = $script' \
-  languages/bats/tasks.json > tasks.json.new && mv tasks.json.new languages/bats/tasks.json
+jq -r '.[0].command' languages/bats/tasks.json | shellcheck --shell=bash -
 ```
 
 The grammar is pinned by commit in two places that must match: `[grammars.bats]` in `extension.toml` and the `tree-sitter-bats` dependency in `test/Cargo.toml`. The tests fail when they differ.

@@ -1,13 +1,7 @@
-; @test "name" { ... }. An unquoted name is several words, each its own node;
-; Zed joins the @name captures.
+; @test "name" { ... }
 (test_block
   "@test" @context
-  .
-  [
-    (string)
-    (raw_string)
-    (word)
-  ]+ @name) @item
+  name: (test_name) @name) @item
 
 ; Functions by bare name, as bash-language-server lists them, whether written
 ; `name()` or `function name`. A function Bats runs as a test because its

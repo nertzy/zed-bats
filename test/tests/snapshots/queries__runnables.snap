@@ -3,37 +3,44 @@ source: tests/queries.rs
 expression: "render(&matches(\"runnables\", &read(FIXTURE)))"
 ---
 (tag bats-file)
-  @_bats-file 1:1 #!/usr/bin/env bats …
   @run 1:1 #!/usr/bin/env bats
 
 (tag bats-test)
   @_bats-test 18:1 @test "greets by name" { …
   @run 18:1 @test
+  @BATS_TEST_NAME 18:7 "greets by name"
 
 (tag bats-test)
   @_bats-test 25:1 @test 'matches a.b* (literally) [x] {y} ^$ | +? \ too' { …
   @run 25:1 @test
+  @BATS_TEST_NAME 25:7 'matches a.b* (literally) [x] {y} ^$ | +? \ too'
 
 (tag bats-test)
   @_bats-test 29:1 @test unquoted name with words { …
   @run 29:1 @test
+  @BATS_TEST_NAME 29:7 unquoted name with words
 
 (tag bats-test)
   @_bats-test 36:1 @test "greets" { …
   @run 36:1 @test
+  @BATS_TEST_NAME 36:7 "greets"
 
 (tag bats-test)
   @_bats-test 40:1 @test "matches $HOME literally" { …
   @run 40:1 @test
+  @BATS_TEST_NAME 40:7 "matches $HOME literally"
 
 (tag bats-test)
   @_bats-test 44:1 @test "one line" { true; }
   @run 44:1 @test
+  @BATS_TEST_NAME 44:7 "one line"
 
 (tag bats-test)
   @_bats-test 46:1 @test "empty" { }
   @run 46:1 @test
+  @BATS_TEST_NAME 46:7 "empty"
 
 (tag bats-test)
   @_bats-test 48:1 function marked_by_comment { # @test …
   @run 48:10 marked_by_comment
+  @BATS_TEST_NAME 48:10 marked_by_comment

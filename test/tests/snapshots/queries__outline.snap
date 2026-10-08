@@ -21,10 +21,7 @@ expression: "render(&matches(\"outline\", &read(FIXTURE)))"
 
   @item 29:1 @test unquoted name with words { …
   @context 29:1 @test
-  @name 29:7 unquoted
-  @name 29:16 name
-  @name 29:21 with
-  @name 29:26 words
+  @name 29:7 unquoted name with words
 
   @item 36:1 @test "greets" { …
   @context 36:1 @test

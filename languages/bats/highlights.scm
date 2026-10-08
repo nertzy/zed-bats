@@ -107,9 +107,8 @@
   (heredoc_body)
 ] @string
 
-; An unquoted test name is several words; a `name:` field pattern matches
-; only the first, and test_block has no other word children.
-(test_block
+; The words of an unquoted test name. A quoted name is already a string.
+(test_name
   (word) @string)
 
 [

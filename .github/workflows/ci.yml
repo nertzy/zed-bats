@@ -37,8 +37,12 @@ jobs:
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
         with:
           workspaces: test
-      - run: shellcheck --shell=bash tasks/run-test.bash
+      - name: Shellcheck task commands
         working-directory: .
+        run: |
+          for i in $(jq 'keys[]' languages/bats/tasks.json); do
+            jq -r ".[$i].command" languages/bats/tasks.json | shellcheck --shell=bash -
+          done
       - run: cargo fmt --check
       - run: cargo clippy --all-targets --locked -- -D warnings
 
@@ -63,3 +67,4 @@ jobs:
         with:
           workspaces: test
       - run: cargo test --locked
+      - run: bats tasks.bats
