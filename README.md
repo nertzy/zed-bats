@@ -33,12 +33,14 @@ The single-test task gets the test's name, as written between `@test` and `{`, i
 
 ## Install
 
-The extension isn't in Zed's extension registry yet. Install it from a checkout:
+Open Zed's Extensions page (`zed: extensions`), search for Bats, and install it.
+
+To try unreleased changes, install it from a checkout instead:
 
 1. `git clone https://github.com/nertzy/zed-bats`
 2. In Zed, run `zed: install dev extension` and choose the checkout.
 
-Zed compiles the grammar on install; it downloads the WASI SDK it needs the first time.
+Zed compiles the grammar on install; it downloads the WASI SDK it needs the first time. A dev extension overrides the published one until you uninstall it.
 
 ## Scope and limitations
 
