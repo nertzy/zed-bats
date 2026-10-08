@@ -62,3 +62,9 @@ not_a_test() {
   # @test
   false
 }
+
+print_usage() {
+  cat <<USAGE
+$# arguments, last status $?
+USAGE
+}

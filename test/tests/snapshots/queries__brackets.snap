@@ -130,3 +130,9 @@ expression: "render(&matches(\"brackets\", &read(FIXTURE)))"
 
   @open 61:14 {
   @close 64:1 }
+
+  @open 66:12 (
+  @close 66:13 )
+
+  @open 66:15 {
+  @close 70:1 }

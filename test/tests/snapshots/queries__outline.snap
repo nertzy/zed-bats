@@ -51,3 +51,6 @@ expression: "render(&matches(\"outline\", &read(FIXTURE)))"
 
   @item 61:1 not_a_test() { …
   @name 61:1 not_a_test
+
+  @item 66:1 print_usage() { …
+  @name 66:1 print_usage

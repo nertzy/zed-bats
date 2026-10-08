@@ -289,3 +289,27 @@ expression: "render(&matches(\"highlights\", &read(FIXTURE)))"
   @function.builtin 63:3 false
 
   @punctuation.bracket 64:1 }
+
+  @function 66:1 print_usage
+
+  @punctuation.bracket 66:12 (
+
+  @punctuation.bracket 66:13 )
+
+  @punctuation.bracket 66:15 {
+
+  @function 67:3 cat
+
+  @operator 67:7 <<
+
+  @string.special 67:9 USAGE
+
+  @string 68:1 $# arguments, last status $?
+
+  @punctuation.special 68:1 $
+
+  @variable.special 68:2 #
+
+  @string.special 69:1 USAGE
+
+  @punctuation.bracket 70:1 }
