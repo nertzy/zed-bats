@@ -54,6 +54,11 @@ fn harness_tests_the_grammar_revision_the_extension_pins() {
         pinned["repository"].as_str(),
         Some("https://github.com/nertzy/tree-sitter-bats")
     );
+    assert_eq!(
+        vcs_info["git"]["dirty"].as_bool(),
+        None,
+        "tree-sitter-bats was published from a dirty checkout"
+    );
     assert_eq!(pinned["rev"].as_str(), vcs_info["git"]["sha1"].as_str());
 }
 
