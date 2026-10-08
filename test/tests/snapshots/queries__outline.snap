@@ -1,0 +1,50 @@
+---
+source: tests/queries.rs
+expression: "render(&matches(\"outline\", &read(FIXTURE)))"
+---
+  @item 6:1 setup_file() { …
+  @name 6:1 setup_file
+
+  @item 10:1 setup() { …
+  @name 10:1 setup
+
+  @item 14:1 helper() { …
+  @name 14:1 helper
+
+  @item 18:1 @test "greets by name" { …
+  @context 18:1 @test
+  @name 18:7 "greets by name"
+
+  @item 25:1 @test 'matches a.b* (literally) [x] {y} ^$ | +? \ too' { …
+  @context 25:1 @test
+  @name 25:7 'matches a.b* (literally) [x] {y} ^$ | +? \ too'
+
+  @item 29:1 @test unquoted name with words { …
+  @context 29:1 @test
+  @name 29:7 unquoted
+  @name 29:16 name
+  @name 29:21 with
+  @name 29:26 words
+
+  @item 36:1 @test "greets" { …
+  @context 36:1 @test
+  @name 36:7 "greets"
+
+  @item 40:1 @test "matches $HOME literally" { …
+  @context 40:1 @test
+  @name 40:7 "matches $HOME literally"
+
+  @item 44:1 @test "one line" { true; }
+  @context 44:1 @test
+  @name 44:7 "one line"
+
+  @item 46:1 @test "empty" { }
+  @context 46:1 @test
+  @name 46:7 "empty"
+
+  @item 48:1 function marked_by_comment { # @test …
+  @context 48:1 function
+  @name 48:10 marked_by_comment
+
+  @item 56:1 teardown() { …
+  @name 56:1 teardown

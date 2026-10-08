@@ -8,4 +8,4 @@ repository = "https://github.com/nertzy/zed-bats"
 
 [grammars.bats]
 repository = "https://github.com/nertzy/tree-sitter-bats"
-rev = "a9b86d87bc8617af6181aff5e03483714dab4bc2"
+rev = "cd4fb46943d50247cf318a553f8124ab33e07232"
