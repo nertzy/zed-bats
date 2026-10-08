@@ -8,7 +8,7 @@ updates:
       cargo-dependencies:
         patterns: ["*"]
     ignore:
-      # The grammar is pinned by commit in extension.toml and test/Cargo.toml; bump both together by hand.
+      # extension.toml pins the grammar by commit; bump it with test/Cargo.toml's version by hand.
       - dependency-name: tree-sitter-bats
 
   - package-ecosystem: github-actions

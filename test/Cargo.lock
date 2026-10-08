@@ -437,7 +437,8 @@ dependencies = [
 [[package]]
 name = "tree-sitter-bats"
 version = "0.1.0"
-source = "git+https://github.com/nertzy/tree-sitter-bats?rev=680b1b0ae85f8126c83648822d2952565a151cc3#680b1b0ae85f8126c83648822d2952565a151cc3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a3200ca43d636df35c934bff05dc8942468ce20be4bbd019e4177c08f3946f6c"
 dependencies = [
  "cc",
  "tree-sitter-language",

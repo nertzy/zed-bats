@@ -16,4 +16,4 @@ streaming-iterator = "0.1"
 toml = "1.1"
 tree-sitter = "0.27"
 # Keep rev in sync with [grammars.bats] in ../extension.toml; tests/manifest.rs checks it.
-tree-sitter-bats = { git = "https://github.com/nertzy/tree-sitter-bats", rev = "680b1b0ae85f8126c83648822d2952565a151cc3" } # v0.1.0
+tree-sitter-bats = "=0.1.0"
