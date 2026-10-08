@@ -171,15 +171,25 @@ fn the_test_task_reports_a_row_above_every_test() {
 
 #[test]
 fn the_test_task_stops_when_a_variable_is_missing() {
-    let output = run(&task("bats-test"), &HashMap::new());
+    let file = root().join(FIXTURE).canonicalize().unwrap();
+    for variables in [
+        HashMap::from([("ZED_FILE", file.display().to_string())]),
+        HashMap::from([("ZED_ROW", "18".to_string())]),
+    ] {
+        let output = run(&task("bats-test"), &variables);
 
-    assert!(!output.status.success());
-    let stderr = String::from_utf8_lossy(&output.stderr);
-    let messages: Vec<&str> = stderr
-        .lines()
-        .filter(|line| !line.starts_with("bash: ") && *line != "exit")
-        .collect();
-    assert_eq!(messages, ["ZED_FILE and ZED_ROW must be set"], "{stderr}");
+        assert!(!output.status.success(), "{variables:?}");
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        let messages: Vec<&str> = stderr
+            .lines()
+            .filter(|line| !line.starts_with("bash: ") && *line != "exit")
+            .collect();
+        assert_eq!(
+            messages,
+            ["ZED_FILE and ZED_ROW must be set"],
+            "{variables:?}: {stderr}"
+        );
+    }
 }
 
 #[test]
