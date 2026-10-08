@@ -3,11 +3,12 @@ mod support;
 use std::{
     collections::HashMap,
     os::unix::process::CommandExt,
+    path::{Path, PathBuf},
     process::{Command, Output, Stdio},
 };
 
 use serde_json::Value;
-use support::{FIXTURE, matches, read, root};
+use support::{FIXTURE, Match, matches, read, root};
 
 fn tasks() -> Vec<Value> {
     serde_json::from_str::<Vec<Value>>(&read("languages/bats/tasks.json")).unwrap()
@@ -22,7 +23,7 @@ fn task(tag: &str) -> Value {
 
 /// Substitutes task variables the way Zed does: `ZED_` variables resolve or
 /// fail, and any other `$variable` is left for the shell.
-fn substitute(template: &str, variables: &HashMap<&str, String>) -> String {
+fn substitute(template: &str, variables: &HashMap<String, String>) -> Result<String, String> {
     shellexpand::env_with_context(template, |name: &str| {
         let variable = &name[..name.find(':').unwrap_or(name.len())];
         match variables.get(variable) {
@@ -32,20 +33,22 @@ fn substitute(template: &str, variables: &HashMap<&str, String>) -> String {
             None => Ok(None),
         }
     })
-    .unwrap_or_else(|error| panic!("{template}: {error}"))
-    .into_owned()
+    .map(|expanded| expanded.into_owned())
+    .map_err(|error| error.to_string())
 }
 
 /// Spawns a task the way Zed does on macOS and Linux: substitute variables
 /// in the command, paste it unquoted into `<shell> <shell args> -i -c`
-/// (`ShellBuilder::build_no_quote`), and export the task variables.
-fn run(task: &Value, variables: &HashMap<&str, String>) -> Output {
+/// (`ShellBuilder::build_no_quote`), and export the task variables. Zed
+/// offers a task only when its label resolves.
+fn run(task: &Value, variables: &HashMap<String, String>) -> Output {
+    substitute(task["label"].as_str().unwrap(), variables).unwrap();
     assert!(
         task.get("args").is_none(),
         "Zed pastes args into the command unquoted"
     );
     let shell = &task["shell"]["with_arguments"];
-    let command = substitute(task["command"].as_str().unwrap(), variables);
+    let command = substitute(task["command"].as_str().unwrap(), variables).unwrap();
     let shell_args: Vec<&str> = shell["args"]
         .as_array()
         .unwrap()
@@ -79,24 +82,64 @@ fn run(task: &Value, variables: &HashMap<&str, String>) -> Output {
         .expect("bash and bats on PATH")
 }
 
-#[test]
-fn the_test_task_runs_the_checked_in_script() {
-    assert!(
-        task("bats-test")["command"] == read("tasks/run-test.bash"),
-        "tasks.json is stale; see CONTRIBUTING.md to regenerate it from tasks/run-test.bash"
-    );
+/// The variables Zed gives a task run from `runnable`: the file and row, and
+/// each capture other than @run as `ZED_CUSTOM_<capture>`.
+fn variables(file: &Path, runnable: &Match) -> HashMap<String, String> {
+    let row = runnable
+        .captures
+        .iter()
+        .find(|capture| capture.name == "run")
+        .unwrap()
+        .row
+        + 1;
+    let mut variables = HashMap::from([
+        ("ZED_FILE".to_string(), file.display().to_string()),
+        (
+            "ZED_FILENAME".to_string(),
+            file.file_name().unwrap().to_string_lossy().into_owned(),
+        ),
+        ("ZED_ROW".to_string(), row.to_string()),
+    ]);
+    for capture in runnable
+        .captures
+        .iter()
+        .filter(|capture| capture.name != "run")
+    {
+        variables.insert(format!("ZED_CUSTOM_{}", capture.name), capture.text.clone());
+    }
+    variables
+}
+
+fn fixture() -> PathBuf {
+    root().join(FIXTURE).canonicalize().unwrap()
+}
+
+fn runnables(tag: &str) -> Vec<Match> {
+    matches("runnables", &read(FIXTURE))
+        .into_iter()
+        .filter(|found| found.properties == [format!("tag {tag}")])
+        .collect()
 }
 
 #[test]
-fn substitution_leaves_the_scripts_untouched() {
+fn substitution_leaves_the_commands_untouched() {
     let variables = HashMap::from([
-        ("ZED_FILE", "/a b/$x.bats".to_string()),
-        ("ZED_ROW", "7".to_string()),
+        ("ZED_FILE".to_string(), "/a b/$x.bats".to_string()),
+        (
+            "ZED_CUSTOM_BATS_TEST_NAME".to_string(),
+            "\"$y\"".to_string(),
+        ),
     ]);
     for task in tasks() {
         let command = task["command"].as_str().unwrap();
-        assert_eq!(substitute(command, &variables), command);
+        assert_eq!(substitute(command, &variables).unwrap(), command);
     }
+}
+
+#[test]
+fn the_test_task_needs_a_test_name() {
+    let variables = HashMap::from([("ZED_FILENAME".to_string(), "example.bats".to_string())]);
+    assert!(substitute(task("bats-test")["label"].as_str().unwrap(), &variables).is_err());
 }
 
 #[test]
@@ -114,8 +157,6 @@ fn tasks_run_in_bash_without_rc_files_whatever_the_users_shell() {
 /// and checks that exactly that test ran.
 #[test]
 fn each_runnable_runs_exactly_its_test() {
-    let source = read(FIXTURE);
-    let file = root().join(FIXTURE).canonicalize().unwrap();
     let task = task("bats-test");
     let expected = [
         "greets by name",
@@ -127,83 +168,27 @@ fn each_runnable_runs_exactly_its_test() {
         "empty",
         "marked_by_comment",
     ];
+    let runnables = runnables("bats-test");
+    assert_eq!(runnables.len(), expected.len());
 
-    let rows: Vec<usize> = matches("runnables", &source)
-        .iter()
-        .filter(|found| found.properties == ["tag bats-test"])
-        .map(|found| {
-            found
-                .captures
-                .iter()
-                .find(|capture| capture.name == "run")
-                .unwrap()
-                .row
-                + 1
-        })
-        .collect();
-    assert_eq!(rows.len(), expected.len());
-
-    for (row, name) in rows.iter().zip(expected) {
-        let variables = HashMap::from([
-            ("ZED_FILE", file.display().to_string()),
-            ("ZED_ROW", row.to_string()),
-        ]);
-        let output = run(&task, &variables);
+    for (runnable, name) in runnables.iter().zip(expected) {
+        let output = run(&task, &variables(&fixture(), runnable));
 
         assert_eq!(
             String::from_utf8_lossy(&output.stdout),
             format!("1..1\nok 1 {name}\n"),
-            "row {row}; stderr: {}",
+            "{runnable:?}; stderr: {}",
             String::from_utf8_lossy(&output.stderr)
         );
     }
 }
 
 #[test]
-fn the_test_task_reports_a_row_above_every_test() {
-    let file = root().join(FIXTURE).canonicalize().unwrap();
-    let variables = HashMap::from([
-        ("ZED_FILE", file.display().to_string()),
-        ("ZED_ROW", "2".to_string()),
-    ]);
-    let output = run(&task("bats-test"), &variables);
-
-    assert!(!output.status.success());
-    assert!(
-        String::from_utf8_lossy(&output.stderr).contains("No Bats test starts on or above line 2"),
-        "{}",
-        String::from_utf8_lossy(&output.stderr)
-    );
-}
-
-#[test]
-fn the_test_task_stops_when_a_variable_is_missing() {
-    let file = root().join(FIXTURE).canonicalize().unwrap();
-    for variables in [
-        HashMap::from([("ZED_FILE", file.display().to_string())]),
-        HashMap::from([("ZED_ROW", "18".to_string())]),
-    ] {
-        let output = run(&task("bats-test"), &variables);
-
-        assert!(!output.status.success(), "{variables:?}");
-        let stderr = String::from_utf8_lossy(&output.stderr);
-        let messages: Vec<&str> = stderr
-            .lines()
-            .filter(|line| !line.starts_with("bash: ") && *line != "exit")
-            .collect();
-        assert_eq!(
-            messages,
-            ["ZED_FILE and ZED_ROW must be set"],
-            "{variables:?}: {stderr}"
-        );
-    }
-}
-
-#[test]
 fn the_file_task_runs_the_whole_file() {
-    let file = root().join(FIXTURE).canonicalize().unwrap();
-    let variables = HashMap::from([("ZED_FILE", file.display().to_string())]);
-    let output = run(&task("bats-file"), &variables);
+    let [runnable] = &runnables("bats-file")[..] else {
+        panic!("expected one bats-file runnable");
+    };
+    let output = run(&task("bats-file"), &variables(&fixture(), runnable));
 
     assert!(
         output.status.success(),

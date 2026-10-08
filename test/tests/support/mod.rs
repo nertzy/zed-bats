@@ -32,12 +32,14 @@ pub fn query(name: &str) -> Query {
 pub const FIXTURE: &str = "test/fixtures/example.bats";
 
 /// One query match: the `#set!` properties of its pattern and its captures.
+#[derive(Debug)]
 pub struct Match {
     pub pattern: usize,
     pub properties: Vec<String>,
     pub captures: Vec<Capture>,
 }
 
+#[derive(Debug)]
 pub struct Capture {
     pub name: String,
     pub row: usize,
