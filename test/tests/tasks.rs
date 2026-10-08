@@ -63,6 +63,13 @@ fn run(task: &Value, variables: &HashMap<&str, String>) -> Output {
             _ => Ok(()),
         });
     }
+    // Zed exports its task variables to every task, so a test run from a Zed
+    // terminal inherits them; each case sets only its own.
+    for (name, _) in std::env::vars_os() {
+        if name.to_string_lossy().starts_with("ZED_") {
+            bash.env_remove(name);
+        }
+    }
     bash.args(shell_args)
         .args(["-i", "-c", &command])
         .envs(variables)
