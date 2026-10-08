@@ -1,0 +1,18 @@
+---
+source: tests/queries.rs
+expression: "render(&matches(\"injections\", &read(FIXTURE)))"
+---
+(injection.language comment)
+  @injection.content 1:1 #!/usr/bin/env bats
+
+(injection.language comment)
+  @injection.content 3:1 # bats file_tags=fixture
+
+(injection.language comment)
+  @injection.content 24:1 # bats test_tags=regex
+
+(injection.language comment)
+  @injection.content 60:1 # Bats ignores a `# @test` that isn't on the line opening the function.
+
+(injection.language comment)
+  @injection.content 62:3 # @test

@@ -1,4 +1,4 @@
-(comment) @comment.inclusive
+[(comment) (test_marker_comment)] @comment.inclusive
 
 [
   (string)

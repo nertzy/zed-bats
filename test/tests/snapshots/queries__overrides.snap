@@ -1,0 +1,49 @@
+---
+source: tests/queries.rs
+expression: "render(&matches(\"overrides\", &read(FIXTURE)))"
+---
+  @comment.inclusive 1:1 #!/usr/bin/env bats
+
+  @comment.inclusive 3:1 # bats file_tags=fixture
+
+  @string 7:19 "hello"
+
+  @string 11:11 "$BATS_TEST_TMPDIR/scratch"
+
+  @string 15:8 "$GREETING, $1"
+
+  @string 18:7 "greets by name"
+
+  @string 20:5 "$status"
+
+  @string 21:5 "$output"
+
+  @string 21:17 "hello, world"
+
+  @comment.inclusive 24:1 # bats test_tags=regex
+
+  @string 25:7 'matches a.b* (literally) [x] {y} ^$ | +? \ too'
+
+  @string 26:6 "abc"
+
+  @string 36:7 "greets"
+
+  @string 37:5 "$(helper you)"
+
+  @string 37:23 "hello, you"
+
+  @string 40:7 "matches $HOME literally"
+
+  @string 44:7 "one line"
+
+  @string 46:7 "empty"
+
+  @comment.inclusive 48:30 # @test
+
+  @string 57:10 "$BATS_TEST_TMPDIR/scratch"
+
+  @comment.inclusive 60:1 # Bats ignores a `# @test` that isn't on the line opening the function.
+
+  @comment.inclusive 62:3 # @test
+
+  @string 68:1 $# arguments, last status $?

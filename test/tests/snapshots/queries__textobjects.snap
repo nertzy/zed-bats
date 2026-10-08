@@ -38,6 +38,8 @@ expression: "render(&matches(\"textobjects\", &read(FIXTURE)))"
 
   @function.around 46:1 @test "empty" { }
 
+  @comment.around 48:30 # @test
+
   @function.around 48:1 function marked_by_comment { # @test …
   @function.inside 48:30 # @test
   @function.inside 49:3 if true; then …

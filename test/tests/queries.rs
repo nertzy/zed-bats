@@ -84,6 +84,16 @@ fn indents() {
     insta::assert_snapshot!(render(&matches("indents", &read(FIXTURE))));
 }
 
+#[test]
+fn overrides() {
+    insta::assert_snapshot!(render(&matches("overrides", &read(FIXTURE))));
+}
+
+#[test]
+fn injections() {
+    insta::assert_snapshot!(render(&matches("injections", &read(FIXTURE))));
+}
+
 /// Catches upstream highlight changes when the grammar is re-pinned.
 /// The highlights snapshot only guards what the fixture exercises, so it
 /// must exercise every pattern.

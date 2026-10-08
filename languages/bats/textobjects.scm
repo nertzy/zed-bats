@@ -17,4 +17,4 @@
     (_)* @function.inside
     ")")) @function.around
 
-(comment)+ @comment.around
+[(comment) (test_marker_comment)]+ @comment.around
