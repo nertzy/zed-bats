@@ -32,6 +32,22 @@ To try a change in Zed, run `zed: install dev extension` and choose your checkou
 
 Add or update tests for behavior changes. Pull requests should explain the problem, the chosen behavior, and any user-visible documentation changes.
 
+## Releasing
+
+Merging to `main` does not reach Zed users. Zed's [extension registry](https://github.com/zed-industries/extensions) pins this repository as the `extensions/bats` submodule and lists its version under `[bats]` in `extensions.toml`, so a release takes two steps:
+
+1. Release here. Bump `version` in `extension.toml`, date the CHANGELOG's Unreleased section, and merge. Then push a signed `vX.Y.Z` tag on the merge commit and create a GitHub release from the CHANGELOG entry.
+2. Open a pull request to `zed-industries/extensions` that [updates the extension](https://zed.dev/docs/extensions/publishing/updating-and-maintenance): move the `extensions/bats` submodule to the tagged commit and set `[bats] version` to the same version as `extension.toml` at that commit.
+
+   ```sh
+   git -C extensions/bats fetch --tags
+   git -C extensions/bats checkout vX.Y.Z
+   ```
+
+   That repository's [AI policy](https://github.com/zed-industries/extensions/blob/main/AI_POLICY.md) bans pull requests from autonomous agents and requires a human to write the pull request text.
+
+Zed publishes the new version once that pull request merges.
+
 ## Reporting bugs and proposing changes
 
 Use [GitHub issues](https://github.com/nertzy/zed-bats/issues) for reproducible bugs and focused proposals. For vulnerabilities, follow [SECURITY.md](SECURITY.md) instead of opening a public issue.
