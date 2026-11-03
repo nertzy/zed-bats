@@ -37,14 +37,11 @@ Add or update tests for behavior changes. Pull requests should explain the probl
 Merging to `main` does not reach Zed users. Zed's [extension registry](https://github.com/zed-industries/extensions) pins this repository as the `extensions/bats` submodule and lists its version under `[bats]` in `extensions.toml`, so a release takes two steps:
 
 1. Release here. Bump `version` in `extension.toml`, date the CHANGELOG's Unreleased section, and merge. Then push a signed `vX.Y.Z` tag on the merge commit and create a GitHub release from the CHANGELOG entry.
-2. Open a pull request to `zed-industries/extensions` that [updates the extension](https://zed.dev/docs/extensions/publishing/updating-and-maintenance): move the `extensions/bats` submodule to the tagged commit and set `[bats] version` to the same version as `extension.toml` at that commit.
+2. Publishing the release runs the [Zed registry workflow](.github/workflows/registry.yml), which uses [zed-extension-action](https://github.com/huacnlee/zed-extension-action) to open a pull request to `zed-industries/extensions` that [updates the extension](https://zed.dev/docs/extensions/publishing/updating-and-maintenance): it moves the `extensions/bats` submodule to the tagged commit and sets `[bats] version` from the tag. It pushes the `bats-vX.Y.Z` branch to the `nertzy/extensions` fork with the `COMMITTER_TOKEN` secret, a classic personal access token with the `repo` and `workflow` scopes. Prereleases are skipped.
 
-   ```sh
-   git -C extensions/bats fetch --tags
-   git -C extensions/bats checkout vX.Y.Z
-   ```
+   If the workflow fails, check `nertzy/extensions` for a `bats-vX.Y.Z` branch before rerunning its job from the Actions tab. The action always creates that branch, so a rerun fails while it exists; delete it first unless a pull request was already opened from it.
 
-   That repository's [AI policy](https://github.com/zed-industries/extensions/blob/main/AI_POLICY.md) bans pull requests from autonomous agents and requires a human to write the pull request text.
+   That repository's [AI policy](https://github.com/zed-industries/extensions/blob/main/AI_POLICY.md) bans pull requests from autonomous agents and requires a human to write pull request text and review replies.
 
 Zed publishes the new version once that pull request merges.
 
