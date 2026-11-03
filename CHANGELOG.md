@@ -4,6 +4,10 @@ Notable changes to `zed-bats` are documented here.
 
 ## [Unreleased]
 
+### Changed
+
+- Updated to the tree-sitter-bats 0.2.0 grammar. Its highlighting query only changed formatting.
+
 ## [0.1.0] - 2026-10-08
 
 ### Added
